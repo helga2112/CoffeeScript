@@ -1,0 +1,25 @@
+https://www.youtube.com/watch?v=LwYGPc-6sa0
+https://www.npmjs.com/package/coffee-script
+
+// run coffeescript
+1 - в cmd поставить node.js + coffeescript
+2 - перейти в папку с проектом
+3 - компилим:
+	coffee  --compile quadratic.coffee
+	
+4 - запускаем:
+	coffee myScript.coffee
+	
+	
+очистка консоли
+https://stackoverflow.com/questions/37022369/clear-console-with-command
+
+расширение кофескрипт в хроме
+http://www.railsonmaui.com/blog/2013/05/27/coffeescript-chrome-extensions/
+
+REPL
+зайти в режим репл
+coffee
+выйти 
+process.exit()
+	
