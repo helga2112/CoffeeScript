@@ -2,7 +2,7 @@ maxCells = 100
 gridStep = 10
 interval = -1
 
-colorSelected = 'green'
+colorSelected = 'lavender'
 colorPrev = 'rgba(255, 255, 255, 0.8)'
 shape = []
 isMoving = false
@@ -10,7 +10,7 @@ currentFigure = ''
 isFigureRotated = false
 
 figures = ['square', 'shifted', 'corner', 'letterT', 'tower']
-colors = ['green', 'yellow', 'blue', 'aqua', 'pink' ]
+colors = ['slateblue', 'yellow', 'lightgreen', 'darkturquoise', 'pink' ]
 
 
 shapes = {
@@ -19,6 +19,15 @@ shapes = {
     corner: [0, 10, 20, 21]
     letterT:[0, 1, 2, 11]
     tower:  [0, 10, 20, 30]
+}
+
+rotated = {
+    square: [0, 1, 10, 11],
+    shifted: [1, 10, 11, 20],
+    corner: [0, 10, 20, 21]
+    letterT:[0, 1, 2, 11]
+    tower:  [0, 10, 20, 30]
+
 }
 
 takenCells = []
@@ -226,6 +235,7 @@ getNewPosition = (shape, ramdonFigure) ->
     #'square', 'shifted', 'corner', 'letterT', 'tower'
     switch ramdonFigure 
         when 'shifted' then diapazon = 7
+        when 'letterT' then diapazon = 7
         when 'tower' then diapazon = 9
 
     pos = Math.round (Math.random() * diapazon)
@@ -239,7 +249,7 @@ addItem = () ->
         isMoving = true
         
         # define random figure
-        ind = 0     #Math.floor(Math.random() * 5)
+        ind = Math.floor(Math.random() * 5)
         currentFigure = figures[ind]
         shape = shapes[currentFigure].slice()
         colorSelected = colors[ind]

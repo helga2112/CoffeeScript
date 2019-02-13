@@ -1,17 +1,18 @@
 .grid-container {
     display: grid;
-    grid-template-columns:  repeat(10,50px); /*100px 100px 100px 100px 100px 100px 100px 100px;*/
-    background-color: #2196F3;
+    grid-template-columns:  repeat(10,50px); 
+    background-color: #abcee9;
     padding: 2px 2px 2px 2px;
   }
   div {
     background-color: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(114, 138, 167, 0.8);
     padding: 0px;
     font-size: 16px;
     text-align: center;
   }
   
-  p.square{
+  p{
     background-color: chartreuse;
+    visibility: hidden;
   }
