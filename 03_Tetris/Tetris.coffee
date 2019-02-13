@@ -2,7 +2,15 @@ maxCells = 100
 gridStep = 10
 interval = -1
 
+colorSelected = 'green'
+colorPrev = 'rgba(255, 255, 255, 0.8)'
+shape = []
+isMoving = false
+currentFigure = ''
+isFigureRotated = false
+
 figures = ['square', 'shifted', 'corner', 'letterT', 'tower']
+colors = ['green', 'yellow', 'blue', 'aqua', 'pink' ]
 
 
 shapes = {
@@ -20,146 +28,191 @@ takenCells = []
    - add shape motion
 ###
 ready = () -> 
-        parent = document.body.appendChild(document.createElement('div'))
-        parent.className = 'grid-container'
+    parent = document.body.appendChild(document.createElement('div'))
+    parent.className = 'grid-container'
 
-        for i in [0 ...maxCells]
-              newElement = parent.appendChild(document.createElement('div'))
-              newElement.innerHTML = '<p>' + i + '</p>'
-              newElement.className = 'grid-item' + i
-        a = 0
-       interval = setInterval ( -> addItem()),
-                         1000
+    for i in [0 ...maxCells]
+        newElement = parent.appendChild(document.createElement('div'))
+        newElement.innerHTML = '<p>' + i + '</p>'
+        newElement.className = 'grid-item' + i
+    a = 0
+    interval = setInterval ( -> addItem()), 500
 
 ###
     Move the shape
 ###                     
 onKeyup = (e) -> 
-    if e.keyCode is 37
-        if(a.isMoving)
-            a.shift -1
-    else if e.keyCode is 39
-        if(a.isMoving)
-            a.shift 1
+    if e.keyCode is 37   # <=
+        if(isMoving)
+            shift shape, -1
+    else if e.keyCode is 39 # =>
+        if(isMoving)
+            shift shape, 1
+    else  if e.keyCode is 32 # Space
+        rotateFigure()
 
 
 document.addEventListener("DOMContentLoaded", ready)
 document.addEventListener('keyup', onKeyup)
 
 
+rotateFigure = () ->
+    ###
+    square: [0, 1, 10, 11]
+    shifted:[0, 1, 11, 12]
+    corner: [0, 10, 20, 21]
+    letterT:[0, 1, 2, 11]
+    tower:  [0, 10, 20, 30]
+    ###
 
-class Figure
-    colors = ['green', 'yellow', 'blue', 'aqua', 'pink' ]
-    colorSelected = 'green'
-    colorPrev = 'rgba(255, 255, 255, 0.8)'
-    shape: []
-    isMoving: false
-    
-    # move the figure to the right or to the left (on user key up)
-    shift: (num)->
-        if(canShift(@shape, num))
-            for i of @shape
-                temp = document.getElementsByClassName('grid-item' + @shape[i])
-                temp[0].style.backgroundColor = colorPrev
+    switch currentFigure
+        when 'shifted' then 1
+        when 'corner' then 1
+        when 'letterT' then 1
+        when 'tower' then 1
 
-            for i of @shape
-                @shape[i] += num 
-                temp = document.getElementsByClassName('grid-item' + @shape[i])
-                temp[0].style.backgroundColor = 'green'
+# move the figure to the right or to the left (on user key up)
+shift = (arr, num)->
+    if(canShift(arr, num))
+        for i of arr
+            temp = document.getElementsByClassName('grid-item' + arr[i])
+            temp[0].style.backgroundColor = colorPrev
 
-
-    # check if the figure can be shifted
-    canShift = (arr, num) ->
-        if num < 0 
-         for t of arr
-            if (+arr[t]  + num) % gridStep  < 0 
-                return false
-
-        if num > 0
-            for t of arr
-                if (+arr[t] % gridStep + num)  >= gridStep 
-                    return false
-         return true
-
-    # move the figure down each second
-    move: (newPos) ->
-            if newPos
-                for i of @shape
-                    @shape[i] += newPos
-                    temp = document.getElementsByClassName('grid-item' + @shape[i])
-                    temp[0].style.backgroundColor = colorSelected
-
-            else
-                #clean prev cells
-                clean = document.getElementsByTagName('div')
-                [].forEach.call(clean, (item) -> 
-                    unless item.className is 'grid-container' 
-                        num = item.className.slice('grid-item'.length, item.className.length)
-                        unless takenCells.includes +num
-                            item.style.backgroundColor = 'rgba(255, 255, 255, 0.8)')
-
-                # check if can continue moving
-                if canContinue(@shape, takenCells, gridStep)
-                    setColor @shape, gridStep
-                    
-                else
-                    setColor @shape
-                    @isMoving = false
-                    takenCells = [...takenCells, ...@shape]
-                    return  
-
-    setColor = (array, delta = 0) ->
-         for i of array
-            array[i] = array[i] + delta
-            temp = document.getElementsByClassName('grid-item' + array[i])
+        for i of arr
+            arr[i] += num 
+            temp = document.getElementsByClassName('grid-item' + arr[i])
             temp[0].style.backgroundColor = colorSelected
 
-    #check if the shape can move on
-    canContinue = (array, takenCells, gridStep) ->
-             a = array.slice()
-            # a.forEach((element)-> element + gridStep)
-            
-             for i of a 
-                a[i] += gridStep
-                if takenCells.includes a[i]
-                    return false
-                else if a[i] > maxCells
-                    return false
-             return true 
+
+
+
+# check if the figure can be shifted
+canShift = (arr, num) ->
+    if num < 0 
+        for t of arr
+            if takenCells.includes +arr[t] + num
+                return false
+            row = Math.floor +arr[t] / gridStep  
+            newRow = Math.floor (+arr[t]  + num) / gridStep
+            if newRow != row
+                return false
+
+    if num > 0
+        for t of arr
+            if takenCells.includes +arr[t] + num
+                return false
+            else if (+arr[t] % gridStep + num)  >= gridStep 
+                return false
+    return true
+
+   
+   
+
+# move the figure down each second
+move = (shape, newPos) ->
+    if newPos
+        for i of shape
+            shape[i] += newPos
+            temp = document.getElementsByClassName('grid-item' + shape[i])
+            temp[0].style.backgroundColor = colorSelected
+    else
+        #clean prev cells
+        redrawGameField()
+
+        # check if can continue moving 
+        canMoveOn = canContinue(shape, takenCells, gridStep)
+        if canMoveOn
+            setColor shape, gridStep
+        else
+            setColor shape
+            isMoving = false
+            takenCells = [...takenCells, ...shape]
+            return  
+
+#clean prev cells
+redrawGameField = () ->
+    clean = document.getElementsByTagName('div')
+    [].forEach.call(clean, (item) -> 
+        unless item.className is 'grid-container' 
+            num = item.className.slice('grid-item'.length, item.className.length)
+            unless takenCells.includes +num
+                item.style.backgroundColor = 'rgba(255, 255, 255, 0.8)')
+
+# set color to Figure
+setColor = (array, delta = 0) ->
+    for i of array
+        array[i] = array[i] + delta
+        temp = document.getElementsByClassName('grid-item' + array[i])
+        temp[0].style.backgroundColor = colorSelected
+    return
+
+
+
+#check if the shape can move on
+canContinue = (array, takenCells, gridStep) ->
+   # a = array.slice()
+    a = array.map (item) -> item + gridStep
+    for i of a 
+        if takenCells.includes a[i]
+            return false
+        else if a[i] > maxCells
+            return false
+    return true 
+
 
 
 removeLines = () ->
     controll = 0
-    for a in [0...gridStep]
-        controll += a
-       
-    r = []
     takenCells = takenCells.sort()
-    currentRow = -1
-    rowSum = 0
-    rowToRemove = []
+    toRemove = []
+    current = -1
 
     if takenCells.length > 0
-        for i of takenCells 
-            d = Math.floor(takenCells[i] / gridStep)
-            if d isnt currentRow
-                if rowSum is controll
-                    removeRow(rowToRemove)
-                    start = takenCells.indexOf rowToRemove[0]
-                    end = takenCells.indexOf rowToRemove[rowToRemove.length]
-                    takenCells = takenCells.slice(start, end)
-                rowSum = 0
-                currentRow = d
-                rowToRemove = []
-                
-            rowSum += takenCells[i] % gridStep
-            rowToRemove.concat takenCells[i]
+        count = 0
+        current = Math.floor(takenCells[0] / 10)
+        tempArr = []
+        for i of takenCells
+            row = Math.floor(takenCells[i] / 10)
+            if current == row
+                temp = document.getElementsByClassName('grid-item' + takenCells[i])
+                if temp[0].style.backgroundColor == colorSelected
+                   tempArr.push takenCells[i]
+                   if tempArr.length == gridStep 
+                       toRemove = toRemove.concat tempArr
+                       current += 1
+                       tempArr = []
+            else 
+                tempArr = []
+                tempArr.push takenCells[i]
+                current = row
+
+     removeRow(toRemove)        
+               
+
+          
+
+moveLinesDown = () ->
+    for r of takenCells   
+        temp = document.getElementsByClassName('grid-item' + takenCells[r])
+        temp[0].style.backgroundColor = 'rgba(255, 255, 255, 0.8)'
+    step = Math.floor (maxCells - takenCells[takenCells.length - 1]) / gridStep
+    takenCells = takenCells.map (element)-> element + step * gridStep
+
+    for i of takenCells   
+        temp = document.getElementsByClassName('grid-item' + takenCells[i])
+        temp[0].style.backgroundColor = colorSelected
 
 
 removeRow = (array) -> 
-    for i of array   
-        temp = document.getElementsByClassName('grid-item' + array[i])
-        temp[0].style.backgroundColor = 'rgba(255, 255, 255, 0.8)'
+    if array.length > 0
+        start = takenCells.indexOf array[0]
+        end = takenCells.indexOf array[array.length - 1]
+        takenCells.splice start, end + 1 
+        for i of array   
+            temp = document.getElementsByClassName('grid-item' + array[i])
+            temp[0].style.backgroundColor = 'rgba(255, 255, 255, 0.8)'
+    
+        moveLinesDown()
 
 
 checkMoves = ()->
@@ -168,25 +221,30 @@ checkMoves = ()->
             console.log 'STOP'
             clearInterval interval
 
-a = new Figure()
+getNewPosition = (shape, ramdonFigure) ->
+    diapazon = 8
+    #'square', 'shifted', 'corner', 'letterT', 'tower'
+    switch ramdonFigure 
+        when 'shifted' then diapazon = 7
+        when 'tower' then diapazon = 9
 
-addItem =-> 
-       if !a.isMoving
-            removeLines()
-            checkMoves()
-            a.isMoving = true
-            
-            # define random figure
-            ind = 0 #Math.floor(Math.random() * 5)
-            ramdonFigure = figures[ind]
-            a.shape = shapes[ramdonFigure].slice()
-
-            # make it move
-            a.move(Math.round (Math.random() * 10))
-        else
-            a.move()
+    pos = Math.round (Math.random() * diapazon)
+    return pos
 
 
-
+addItem = () -> 
+    if !isMoving
+        removeLines()
+        checkMoves()
+        isMoving = true
         
-        
+        # define random figure
+        ind = 0     #Math.floor(Math.random() * 5)
+        currentFigure = figures[ind]
+        shape = shapes[currentFigure].slice()
+        colorSelected = colors[ind]
+        # make it move
+        pos = getNewPosition shape, currentFigure
+        move shape, pos
+    else
+        move shape
