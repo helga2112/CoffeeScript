@@ -1,10 +1,12 @@
 <html>
     <head>
         <title>Weather</title>
+        <script type="text/javascript" src="wearther.js"></script>
     </head>
     
     <body>
-        <button id="loadDataButton">Load Data</button>
-        <script type="text/javascript" src="weather.js"></script>
+        <button id="loadDataButton" onclick="doGetWeather()"/>Load Data</button>
+        <label for="weatherQuery">Weather:</label>
+        <input type="text" name='place' value="London"/>
     </body>
 </html>

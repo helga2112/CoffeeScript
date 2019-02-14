@@ -1,0 +1,46 @@
+url = 'http://api.openweathermap.org/data/2.5/weather?q=City,uk&APPID=296825658cf6173062078c07ff1ab3ce'
+
+@doGetWeather = ()->
+    city = document.getElementsByName("place")[0].value
+    
+    resultUlr = url.replace 'City', city 
+    
+    fetchData resultUlr, precessResult
+
+
+fetchData = (city, callback) ->
+    xhr = new XMLHttpRequest
+  
+    xhr.onreadystatechange = ->
+        if xhr.readyState is 4
+                    if xhr.status is 200
+                        callback xhr.responseText
+    
+    xhr.open "GET", city, true
+    xhr.send null
+
+                    
+precessResult = (result) ->
+      resultObject = JSON.parse result
+      weather = new Weather resultObject
+      addData weather
+
+
+class Weather
+    constructor: (obj) ->
+        @temperature = obj.main.temp
+        @pressure = obj.main.pressure
+        @temp_min = obj.main.temp_min
+        @temp_max = obj.main.temp_max
+    
+
+addData = (data) ->
+    div = document.createElement('div');
+    div.innerHTML = '<p> temperature ' + data.temperature + '</p>
+                    <p> pressure ' + data.pressure + '</p>
+                    <p> temperature min: ' + data.temp_min + '</p>
+                    <p> temperature max: ' + data.temp_max + '</p>'
+    document.body.appendChild div
+      
+
+
