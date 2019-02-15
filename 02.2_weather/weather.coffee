@@ -11,7 +11,6 @@ processResponce = (responce)->
     responce.json().then parseData
 
 parseData = (data) ->
-    console.log '2 >>> ', data
     addData(data)
 
 
