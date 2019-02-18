@@ -7,9 +7,23 @@
   };
 
   quadratic = function(a, b, c) {
-    return square(a) + 2 * a * b + c;
+    rez1;
+    rez2;
+    var d, rez1, rez2;
+    d = b * b - 4 * a * c;
+    console.log(d);
+    if (d === 0) {
+      rez1 = -1 * b / (2 * a);
+      return console.log('result 1 = ', rez1);
+    } else if (d > 0) {
+      rez1 = (-b + Math.sqrt(d)) / (2 * a);
+      rez2 = (-b - Math.sqrt(d)) / (2 * a);
+      return console.log('result 1 = ', rez1, 'result 2 = ', rez2);
+    } else if (d < 0) {
+      return console.log('there is no answer');
+    }
   };
 
-  quadratic(2, 5, 6);
+  quadratic(1, -70, 600);
 
 }).call(this);
