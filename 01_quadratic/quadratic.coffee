@@ -1,4 +1,3 @@
-square = (a) -> a * a
 quadratic = (a, b, c) -> 
     rez1
     rez2
