@@ -15,7 +15,7 @@ module.exports = (shape, newPos) ->
 
 # move the figure down each second
 move = (shape, newPos) ->
-	if newPos
+	unless newPos is undefined
 		for i of shape
 			shape[i] += newPos
 			temp = document.getElementsByClassName('grid-item' + shape[i])
@@ -51,6 +51,6 @@ canContinue = (array, takenCells, gridStep) ->
 	for i of a 
 		if takenCells.includes a[i]
 			return false
-		else if a[i] > maxCells
+		else if a[i] >= maxCells
 			return false
 	return true 

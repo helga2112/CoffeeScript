@@ -1,5 +1,4 @@
 settings = require('../../utils/GameSettings.coffee')
-colorSelected = settings.colorSelected
 gridStep = settings.gridStep
 colorPrev = settings.colorPrev
 
@@ -7,7 +6,6 @@ module.exports = ()->
     document.addEventListener('keyup', onKeyup)
 
 onKeyup = (e) -> 
-    console.log settings.shape
     if e.keyCode is 37   # <=
         if(settings.isMoving)
             shift settings.shape, -1
@@ -28,8 +26,7 @@ shift = (arr, num)->
         for i of arr
             arr[i] += num 
             temp = document.getElementsByClassName('grid-item' + arr[i])
-            temp[0].style.backgroundColor = colorSelected
-        console.log 'canShift >>' + arr
+            temp[0].style.backgroundColor = settings.colorSelected
 
 
 

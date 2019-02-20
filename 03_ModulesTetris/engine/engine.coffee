@@ -27,7 +27,7 @@ start = () ->
 
         # define random figure
         settings.shape = createNewShape()
-        pos = getNewPosition settings.shape, currentFigure
+        pos = 0 #getNewPosition settings.shape, currentFigure
         move settings.shape, pos
     else
         move settings.shape
@@ -38,7 +38,7 @@ start = () ->
    creates new shape
 ###
 createNewShape = ()->
-    ind = Math.floor(Math.random() * 5)
+    ind = 0 #Math.floor(Math.random() * 5)
     currentFigure = figures[ind]
     newShape = shapes[currentFigure].slice()
     settings.colorSelected = colors[ind]

@@ -25,6 +25,7 @@ removeLines = () ->
             row = Math.floor(settings.takenCells[i] / 10)
             if current == row
                 temp = document.getElementsByClassName('grid-item' + settings.takenCells[i])
+                console.log settings.colorSelected
                 if temp[0].style.backgroundColor == settings.colorSelected
                    tempArr.push settings.takenCells[i]
                    if tempArr.length == gridStep 
@@ -60,4 +61,5 @@ moveLinesDown = () ->
 
     for i of settings.takenCells   
         temp = document.getElementsByClassName('grid-item' + settings.takenCells[i])
-        temp[0].style.backgroundColor = colorSelected
+        console.log settings.colorSelected
+        temp[0].style.backgroundColor = settings.colorSelected
