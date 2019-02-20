@@ -1,5 +1,4 @@
 @doGetWeather = ()->
-    console.log 'get'
     url = 'http://api.openweathermap.org/data/2.5/weather?q=London,uk&APPID=296825658cf6173062078c07ff1ab3ce'
     fetch url
         .then processResponce 
@@ -11,7 +10,6 @@ processResponce = (responce)->
     responce.json().then parseData
 
 parseData = (data) ->
-    console.log '2 >>> ', data
     addData(data)
 
 

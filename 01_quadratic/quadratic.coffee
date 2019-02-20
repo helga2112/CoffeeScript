@@ -1,14 +1,3 @@
-readline = require('readline');
-rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  terminal: false
-});
-
-rl.on('line', (line) 
-    console.log(line);
-)
-
 quadratic = (a, b, c) -> 
     rez1
     rez2

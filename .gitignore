@@ -6,3 +6,8 @@
 02.1_weather/*
 03_Tetris/Tetris.js.map
 03_Tetris/Tetris.js
+03_ModulesTetris/node_modules/*
+*.js
+*.js.map
+*.json
+04_Test_BB/node_modules/*
